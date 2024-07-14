@@ -4,12 +4,16 @@
   "description": "A sample Stripe implementation",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "author": "stripe-samples",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
     "stripe": "^13.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }
