@@ -1,7 +1,13 @@
 const express = require("express");
 const app = express();
+require("dotenv").config()
+
 // This is your test secret API key.
-const stripe = require("stripe")('sk_test_51PbzEZGTagL4o8i4pvb6cX0CjIFXdpNZ67HYENNoKuEpE0X39e3tP4zidYrGFazXSShZYUeoxIEuQ3jUFJCE2Vp200hOwStp7w');
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+// If you choose to:
+// const cors = require("cors");
+// app.use(cors());
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -10,8 +16,9 @@ const calculateOrderAmount = (items) => {
   // Replace this constant with a calculation of the order's amount
   // Calculate the order total on the server to prevent
   // people from directly manipulating the amount on the client
-  return 1400;
+  return 140;
 };
+
 
 app.post("/create-payment-intent", async (req, res) => {
   const { items } = req.body;
@@ -26,15 +33,15 @@ app.post("/create-payment-intent", async (req, res) => {
     },
   });
 
+  // console.log("PaymentIntent created: ", paymentIntent) // Will return status of "requires_payment_method" which is normal because card etc not selected yet. This endpoint is hit with frontend's initialize()
+
   res.send({
     clientSecret: paymentIntent.client_secret,
   });
 });
 
 
-app.listen(4242, () => { 
-  console.log("Node server listening on port 4242 for API calls!")
-  console.log("Visit so API delivers the public webpage: http://localhost:4242/checkout.html")
-
-
+app.listen(4242, () => {
+  console.log("Node server listening on port 4242!")
+  console.log("Front page at: http://localhost:4242/checkout.html")
 });

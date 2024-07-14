@@ -16,9 +16,12 @@ For other attributes besides email, name, and the standard fields that Stripe AP
 
 ## Setup
 
-1. Create an `.env` file to store your Stripe keys:
-    - `PK_KEY`: Your publishable key for the frontend `checkout.js`.
-    - `SK_KEY`: Your secret key for `server.js`, which has the ultimate authority on the final price and more access to Stripe.
+1. Create an `.env` file to store your Stripe secret key, and as for your Stripe publishable key:
+    - `STRIPE_SECRET_KEY`: Your secret key for `server.js`, which has the ultimate authority on the final price and more access to Stripe.
+    - Your publishable key can be pasted over at frontend `checkout.js` at `const stripe = Stripe(STRIPE_PUBLISHABLE_KEY__PASTE_HERE);`
+    Note: I decided not to load in modules to make this more accessible to total beginners, so it's a straight copy and paste of your key into the source code.
+
+    It doesn't matter if they're test or live keys. Just make sure it's consistent (publishable key and secret keys are both live or both test). Remember at Stripe Dashboard you can be in Test Mode (where API calls do not affect your bank) or Live Mode.
 
 ## Running the sample
 
