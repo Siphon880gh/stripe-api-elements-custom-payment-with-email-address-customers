@@ -19,7 +19,6 @@ const calculateOrderAmount = (items) => {
   return 140;
 };
 
-
 app.post("/create-payment-intent", async (req, res) => {
   const { items } = req.body;
 
@@ -40,6 +39,53 @@ app.post("/create-payment-intent", async (req, res) => {
   });
 });
 
+
+app.post("/confirmed-payment", async (req, res) => {
+  // console.log(req.body)
+  var { paymentIntentId, email } = req.body;
+
+  upsertCustomerByEmail(paymentIntentId, email);
+
+  res.json({});
+});
+
+// When hit /confirmed-payment, save new customer or update existing customer by email and attach payment by paymentIntentId
+async function upsertCustomerByEmail(paymentIntentId, email) {
+  try {
+    // Retrieve the PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    
+    if (paymentIntent.status !== 'succeeded') {
+      throw new Error('PaymentIntent not successful');
+    }
+
+    // Check if a customer already exists with the given email
+    const existingCustomers = await stripe.customers.list({
+      email: email,
+      limit: 1
+    });
+
+    let customer;
+    if (existingCustomers.data.length > 0) {
+      // Customer exists
+      customer = existingCustomers.data[0];
+    } else {
+      // Create a new customer
+      customer = await stripe.customers.create({
+        email: email
+      });
+    }
+
+    // Update the PaymentIntent to associate it with the customer
+    const updatedPaymentIntent = await stripe.paymentIntents.update(paymentIntentId, {
+      customer: customer.id
+    });
+
+    console.log('PaymentIntent successfully associated with customer:', updatedPaymentIntent);
+  } catch (error) {
+    console.error('Error handling PaymentIntent:', error);
+  }
+} // upsertCustomerByEmail
 
 app.listen(4242, () => {
   console.log("Node server listening on port 4242!")

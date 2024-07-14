@@ -84,6 +84,28 @@ async function handleSubmit(e) {
 
     console.log(result);
 
+
+    /* Send to backend
+     * result.paymentIntent.id
+     * pi_XXX
+
+     * result.paymentIntent.status
+     * "succeeded"
+     * 
+     */ 
+
+    fetch("/confirmed-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        paymentIntentId: result.paymentIntent.id, 
+        email: document.getElementById("Field-email").value}),
+    }).then(response => response.json())
+    .then(data => {
+        console.log(data);
+        // alert("Payment confirmed");
+    });
+
   }).catch(function(error) {
     console.log({error});
   })
