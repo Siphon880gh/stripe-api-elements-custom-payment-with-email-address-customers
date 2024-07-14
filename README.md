@@ -58,5 +58,5 @@ For other attributes besides email, name, and the standard fields that Stripe AP
 
 ### GET /payments/:customerId
 
-- This endpoint retrieves all payments associated with a given customer ID.
+- This endpoint retrieves all payments associated with a given customer ID. Eg. `{successfulPayments:[..], failedPayments:[..]}`
 - This functionality is beyond the scope of the basic boilerplate but assumes you are tracking `customerId` associated with the user login via a database, local storage, IndexedDB, or other means.
