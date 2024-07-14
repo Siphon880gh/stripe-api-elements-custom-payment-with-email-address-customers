@@ -46,15 +46,17 @@ app.post("/create-payment-intent", async (req, res) => {
 // Upserts customer by email address and attaches payment by payment intent id"
 app.post("/confirmed-payment", async (req, res) => {
   // console.log(req.body)
+  // var { paymentIntentId, email, name } = req.body;  // If your use case requires a name to save to Stripe
   var { paymentIntentId, email } = req.body;
 
+  //upsertCustomerByEmail(paymentIntentId, email, name); // If your use case requires a name to save to Stripe
   upsertCustomerByEmail(paymentIntentId, email);
 
   res.json({});
 });
 
 // When hit /confirmed-payment, save new customer or update existing customer by email and attach payment by paymentIntentId
-async function upsertCustomerByEmail(paymentIntentId, email) {
+async function upsertCustomerByEmail(paymentIntentId, email, name="") {
   try {
     // Retrieve the PaymentIntent
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -76,7 +78,8 @@ async function upsertCustomerByEmail(paymentIntentId, email) {
     } else {
       // Create a new customer
       customer = await stripe.customers.create({
-        email: email
+        email: email,
+        //name: name
       });
     }
 
