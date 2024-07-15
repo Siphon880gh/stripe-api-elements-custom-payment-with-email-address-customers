@@ -88,7 +88,8 @@ async function upsertCustomerByEmail(paymentIntentId, email, name="") {
       customer: customer.id
     });
 
-    console.log('PaymentIntent successfully associated with customer:', updatedPaymentIntent);
+    console.log('PaymentIntent successfully associated with customer. Customer ID:', customer.id);
+    // console.log('PaymentIntent successfully associated with customer:', updatedPaymentIntent);
   } catch (error) {
     console.error('Error handling PaymentIntent:', error);
   }
@@ -129,6 +130,6 @@ app.get('/payments/:customerId', async (req, res) => {
 });
 
 app.listen(4242, () => {
-  console.log("Node server listening on port 4242!")
+  console.log("Node server listening for API internal calls on port 4242!")
   console.log("Front page at: http://localhost:4242/checkout.html")
 });

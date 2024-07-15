@@ -21,6 +21,7 @@ async function initialize() {
     body: JSON.stringify({ items }),
   });
   const { clientSecret } = await response.json();
+  window.clientSecret = clientSecret;
 
   const appearance = {
     theme: 'stripe',
@@ -103,7 +104,14 @@ async function handleSubmit(e) {
     }).then(response => response.json())
     .then(data => {
         console.log(data);
-        // alert("Payment confirmed");
+    
+        
+        document.querySelector("#payment-element iframe").remove()
+        document.querySelector("#submit").remove()
+        document.querySelector("#Field-email").disabled = true
+        // setTimeout(()=>{
+        //   window.location.reload();
+        // }, 5000)
     });
 
   }).catch(function(error) {
@@ -130,9 +138,7 @@ async function handleSubmit(e) {
 
 // Fetches the payment intent status after payment submission
 async function checkStatus() {
-  const clientSecret = new URLSearchParams(window.location.search).get(
-    "payment_intent_client_secret"
-  );
+  const clientSecret = new URLSearchParams(window.location.search).get("payment_intent_client_secret") || window.clientSecret;
 
   if (!clientSecret) {
     return;
@@ -142,7 +148,7 @@ async function checkStatus() {
 
   switch (paymentIntent.status) {
     case "succeeded":
-      showMessage("Payment succeeded!");
+      showMessage("Payment succeeded! Thank you!");
       break;
     case "processing":
       showMessage("Your payment is processing.");
@@ -165,6 +171,8 @@ function showMessage(messageText) {
   messageContainer.textContent = messageText;
 
   setTimeout(function () {
+    if(messageContainer.textContent.includes("Payment succeeded"))
+      return;
     messageContainer.classList.add("hidden");
     messageContainer.textContent = "";
   }, 4000);
